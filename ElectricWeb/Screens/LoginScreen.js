@@ -1,23 +1,45 @@
-import { View, Image, Text, TextInput, ScrollView, Button } from 'react-native'
+import { View, Image, Text, TextInput, ScrollView, Button, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native';
+import Checkbox from 'expo-checkbox';
+import axios from 'axios';
 
 const LoginScreen = ({ navigation }) => {
+
+    const baseURL = "http://localhost:8080";
 
     const [phoneNumber, setPhoneNumber] = useState(0);
     const [password, setPassword] = useState(0);
     const [showSubmitButton, setShowSubmitButton] = useState(true);
-    const [isPasswordShown, setIsPasswordShown] = useState(false);
     const [isChecked, setIsChecked] = useState(false);
 
     useEffect(() => {
         if (phoneNumber.length === 10 && password.length >= 4) {
             setShowSubmitButton(false);
         }
-    }, [phoneNumber, password]);
+        if (isChecked === true) {
+            setShowSubmitButton(false);
+        } else {
+            setShowSubmitButton(true);
+        }
+    }, [phoneNumber, password, isChecked]);
 
-    const handleLogin = () => {
-        console.log(phoneNumber , password);
+    const handleLogin = async () => {
+        const res = await fetch(`http://127.0.0.1:8080/api/v1/register/user`,
+            {
+                method: 'POST',
+                body: JSON.stringify({
+                    phone: phoneNumber,
+                    password: password
+                })
+            });
+        console.log(res);
+
+            // if (res.data.success === true) {
+            //     Alert.alert('Login Successfull');
+            // } else {
+            //     Alert.alert(res.data.message);
+            // }
     }
 
     return (
@@ -83,14 +105,28 @@ const LoginScreen = ({ navigation }) => {
                             onChangeText={(text) => { setPassword(text) }}
                         />
                     </View>
+
+                    <View style={{
+                        flexDirection: 'row',
+                        marginVertical: 10
+                    }}>
+                        <Checkbox
+                            style={{ marginRight: 10 }}
+                            value={isChecked}
+                            onValueChange={setIsChecked}
+                        />
+                        <Text>I aggree to the terms and conditions</Text>
+                    </View>
+
                     <View >
                         <Button
                             title='Submit'
                             color="green"
                             disabled={showSubmitButton}
-                            onPress={()=> handleLogin() }
+                            onPress={() => handleLogin()}
                         />
                     </View>
+
 
                 </View>
             </ScrollView>
