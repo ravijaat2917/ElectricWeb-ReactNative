@@ -6,12 +6,12 @@ export const registerUser = async (req, res) => {
         const { phone, password, name } = req.body;
         console.log(phone, name, password);
         if (!phone || !password || !name) {
-            return res.status(400).send({ success: false, message: 'All Fields are mendatory' });
+            return res.status(200).send({ success: false, message: 'All Fields are mendatory' });
         }
         // Check ExistingUser
         const ExistingUser = await userModel.findOne({ phone });
         if (ExistingUser) {
-            return res.status(400).send({ success: false, message: 'Already User Please Login' });
+            return res.status(200).send({ success: false, message: 'Already User Please Login' });
         }
         const hashedPassword = await hashPassword(password, 10);
         const user = await new userModel({
@@ -28,11 +28,11 @@ export const loginUser = async (req, res) => {
         const { phone, password } = req.body;
         const user = await userModel.findOne({ phone });
         if (!user) {
-            return res.status(400).send({ success: false, message: 'User Not Registered' });
+            return res.status(200).send({ success: false, message: 'User Not Registered' });
         }
         const matched = await matchPassword(password, user.password);
         if (!matched) {
-            return res.status(400).send({ success: false, message: 'Phone and password not matched' });
+            return res.status(200).send({ success: false, message: 'Phone and password not matched' });
         }
         res.status(200).send({ success: true, message: 'Login Successfully', user });
     } catch (error) {

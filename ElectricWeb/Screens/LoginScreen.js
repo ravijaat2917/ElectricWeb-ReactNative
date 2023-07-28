@@ -25,21 +25,19 @@ const LoginScreen = ({ navigation }) => {
     }, [phoneNumber, password, isChecked]);
 
     const handleLogin = async () => {
-        const res = await fetch(`http://127.0.0.1:8080/api/v1/register/user`,
+        const res = await axios.post('https://electricwebapis.onrender.com/api/v1/login',
             {
-                method: 'POST',
-                body: JSON.stringify({
-                    phone: phoneNumber,
-                    password: password
-                })
+                phone: phoneNumber,
+                password: password
             });
-        console.log(res);
+        await console.log(await res.data.message);
+        Alert.alert(res.data.message);
 
-            // if (res.data.success === true) {
-            //     Alert.alert('Login Successfull');
-            // } else {
-            //     Alert.alert(res.data.message);
-            // }
+        // if (res.data.success === true) {
+        //     Alert.alert('Login Successfull');
+        // } else {
+        //     Alert.alert(res.data.message);
+        // }
     }
 
     return (
